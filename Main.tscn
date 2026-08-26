@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://bx4vrc8cbluuf"]
+
+[ext_resource type="Script" uid="uid://dwm77bkx3xv5m" path="res://Scripts/GameManager.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://UIManager.tscn" id="3_ui"]
+[ext_resource type="PackedScene" path="res://PropSlot.tscn" id="4_slot"]
+[ext_resource type="PackedScene" path="res://Interactable.tscn" id="5_interact"]
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.15, 0.2, 0.25, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.4, 0.4, 0.45, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(20, 1, 20)
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+size = Vector3(20, 1, 20)
+
+[node name="MainWorld" type="Node3D" unique_id=358815532 node_paths=PackedStringArray("prop_slots_parent")]
+script = ExtResource("1_main")
+prop_slots_parent = NodePath("PropSlots")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1967590713]
+environment = SubResource("Environment_1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1875888586]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 10, 0)
+shadow_enabled = true
+
+[node name="HouseBase" type="StaticBody3D" parent="." unique_id=1652480970]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HouseBase" unique_id=1253875925]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HouseBase" unique_id=915903427]
+mesh = SubResource("BoxMesh_floor")
+
+[node name="PropSlots" type="Node3D" parent="." unique_id=1192208525]
+
+[node name="PropSlot1" parent="PropSlots" unique_id=2138932775 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.5, -2)
+
+[node name="PropSlot2" parent="PropSlots" unique_id=75319116 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, -3)
+
+[node name="PropSlot3" parent="PropSlots" unique_id=1412531796 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 3)
+
+[node name="PropSlot4" parent="PropSlots" unique_id=1100272536 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 3)
+
+[node name="FrontDoor" parent="." unique_id=42455936 instance=ExtResource("5_interact")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -9.197422)
+type = 1
+item_name = "Front Door"
+description = "Click to OPEN DOOR (Trust Visitor)"
+
+[node name="Phone" parent="." unique_id=1840418747 instance=ExtResource("5_interact")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -5.8584375)
+type = 2
+item_name = "Security Phone"
+description = "Click to CALL SECURITY (Reject Visitor)"
+
+[node name="Player" parent="." unique_id=763833054 instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="UIManager" parent="." unique_id=1717915646 instance=ExtResource("3_ui")]
