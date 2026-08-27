@@ -12,7 +12,7 @@ func spawn_random_prop() -> Dictionary:
 	for child in get_children():
 		child.queue_free()
 
-	if randf() > 0.8: # 20% chance slot remains empty
+	if randf() > 0.8:
 		return {}
 
 	var categories_list = ["Painting", "Vase", "Box", "TV", "Plant", "Image"]
@@ -20,7 +20,7 @@ func spawn_random_prop() -> Dictionary:
 	
 	var prop_node = StaticBody3D.new()
 	prop_node.set_script(load("res://Scripts/Interactable.gd"))
-	prop_node.collision_layer = 2 # Raycast interactive layer
+	prop_node.collision_layer = 2
 
 	var mesh_inst = MeshInstance3D.new()
 	var box_shape = BoxShape3D.new()
@@ -64,7 +64,6 @@ func spawn_random_prop() -> Dictionary:
 			item_dict["name"] = final_cat
 			item_dict["color"] = color_name
 
-		# Check against already spawned house items to prevent duplicates
 		is_duplicate = false
 		for existing in Global.active_house_items:
 			if existing["name"] == item_dict["name"] and existing["color"] == item_dict["color"]:

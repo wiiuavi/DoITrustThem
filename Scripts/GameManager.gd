@@ -6,7 +6,7 @@ static var instance: GameManager
 @export var prop_slots_parent: Node3D
 @export var image_slots_parent: Node3D
 @export var visitor_interval_seconds: float = 15.0
-@export var game_duration_seconds: float = 1200.0 # 20 Minutes
+@export var game_duration_seconds: float = 1200.0
 @export var visitor_patience_seconds: float = 18.0
 
 var elapsed_time: float = 0.0
@@ -30,13 +30,11 @@ func _on_game_started():
 func generate_house_environment():
 	Global.active_house_items.clear()
 	
-	# Fallback auto-detection if node paths aren't explicitly assigned
 	if not prop_slots_parent:
 		prop_slots_parent = get_node_or_null("../PropSlots")
 	if not image_slots_parent:
 		image_slots_parent = get_node_or_null("../ImageSlots")
 
-	# Populate regular prop slots (vases, TVs, plants, boxes, paintings)
 	if prop_slots_parent:
 		for slot in prop_slots_parent.get_children():
 			if slot.has_method("spawn_random_prop"):
@@ -44,7 +42,6 @@ func generate_house_environment():
 				if not item_data.is_empty():
 					Global.active_house_items.append(item_data)
 
-	# Populate separate image slots
 	if image_slots_parent:
 		for slot in image_slots_parent.get_children():
 			if slot.has_method("spawn_random_prop"):

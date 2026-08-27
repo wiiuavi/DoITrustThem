@@ -1,4 +1,3 @@
-# PlayerController.gd - FPS Controller & Raycast Inspection
 extends CharacterBody3D
 
 @export var speed: float = 4.0
