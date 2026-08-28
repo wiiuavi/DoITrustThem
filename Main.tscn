@@ -2,25 +2,27 @@
 
 [ext_resource type="Script" uid="uid://dwm77bkx3xv5m" path="res://Scripts/GameManager.gd" id="1_main"]
 [ext_resource type="ArrayMesh" uid="uid://txbokqe2vcjb" path="res://house/house1.obj" id="2_3dxm6"]
+[ext_resource type="ArrayMesh" uid="uid://bxh6n8pkbtnik" path="res://house/shelf.obj" id="2_fpfj3"]
 [ext_resource type="PackedScene" path="res://Player.tscn" id="2_player"]
+[ext_resource type="ArrayMesh" uid="uid://bn40b06nfjgyf" path="res://house/bowl.obj" id="3_3b0ty"]
 [ext_resource type="Shape3D" uid="uid://652bnrrra68h" path="res://new_concave_polygon_shape_3d.res" id="3_03owx"]
 [ext_resource type="PackedScene" path="res://UIManager.tscn" id="3_ui"]
+[ext_resource type="ArrayMesh" uid="uid://dw4mj0t0wvru6" path="res://house/cap.obj" id="4_bg4s2"]
 [ext_resource type="PackedScene" path="res://PropSlot.tscn" id="4_slot"]
+[ext_resource type="ArrayMesh" uid="uid://dpcnpccvcdvdy" path="res://house/crate.obj" id="5_hhcpw"]
 [ext_resource type="PackedScene" uid="uid://bel3si3myjb52" path="res://Interactable.tscn" id="5_interact"]
 [ext_resource type="Texture2D" uid="uid://dopolc7lnfk1q" path="res://oak_trapdoor.png" id="5_lgr22"]
+[ext_resource type="ArrayMesh" uid="uid://v1ok3ejh8auw" path="res://house/mug.obj" id="6_mxvw5"]
 [ext_resource type="Texture2D" uid="uid://camy3ostg5duf" path="res://stone.png" id="6_trn2v"]
+[ext_resource type="ArrayMesh" uid="uid://cde7dg7kpjcmf" path="res://house/remote.obj" id="7_xrxkg"]
+[ext_resource type="ArrayMesh" uid="uid://b83arvgo0yes2" path="res://house/statue.obj" id="8_sqvbp"]
 [ext_resource type="ArrayMesh" uid="uid://be7oeymlqrkjv" path="res://house/stool.obj" id="10_wkp8b"]
 [ext_resource type="Shape3D" uid="uid://b24tyg26oiffx" path="res://stool.res" id="11_20pc6"]
 [ext_resource type="ArrayMesh" uid="uid://4bhem7uant41" path="res://house/table.obj" id="12_c6i3y"]
 [ext_resource type="Shape3D" uid="uid://h6a0ovxky8mn" path="res://table.res" id="13_c2ibq"]
 [ext_resource type="ArrayMesh" uid="uid://js88ww2exh67" path="res://house/chair.obj" id="14_j4qnp"]
 [ext_resource type="Shape3D" uid="uid://nt08qd6xfvhb" path="res://chair.res" id="15_fpfj3"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_tp"]
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_tp"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_tp"]
+[ext_resource type="Texture2D" uid="uid://b24wy2qxpgunv" path="res://visitor.png" id="23_bg4s2"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -42,6 +44,13 @@ albedo_texture = ExtResource("6_trn2v")
 uv1_scale = Vector3(2, 2, 2)
 texture_filter = 0
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5d01d"]
+transparency = 1
+albedo_texture = ExtResource("23_bg4s2")
+
+[sub_resource type="QuadMesh" id="QuadMesh_km21w"]
+material = SubResource("StandardMaterial3D_5d01d")
+
 [node name="Main" type="Node3D" unique_id=358815532 node_paths=PackedStringArray("prop_slots_parent", "image_slots_parent")]
 script = ExtResource("1_main")
 prop_slots_parent = NodePath("PropSlots")
@@ -50,17 +59,33 @@ image_slots_parent = NodePath("ImageSlots")
 [node name="TemplateProps" type="Node3D" parent="." unique_id=999999999]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
 
-[node name="Statue" type="MeshInstance3D" parent="TemplateProps" unique_id=999999998]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 51.49859, -56.673347)
-mesh = SubResource("CapsuleMesh_tp")
+[node name="Shelf" type="MeshInstance3D" parent="TemplateProps" unique_id=1961422317]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, -0.22218513, 50, -49.830772)
+mesh = ExtResource("2_fpfj3")
 
-[node name="Vase" type="MeshInstance3D" parent="TemplateProps" unique_id=999999997]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.061926, 50.413574, -52.427162)
-mesh = SubResource("CylinderMesh_tp")
+[node name="Bowl" type="MeshInstance3D" parent="TemplateProps" unique_id=2088950486]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 8.526545, 50, -51.999638)
+mesh = ExtResource("3_3b0ty")
 
-[node name="Box" type="MeshInstance3D" parent="TemplateProps" unique_id=999999996]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6665738, 50.502, -53.062485)
-mesh = SubResource("BoxMesh_tp")
+[node name="Cap" type="MeshInstance3D" parent="TemplateProps" unique_id=1837554433]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 4.986254, 50, -60.414577)
+mesh = ExtResource("4_bg4s2")
+
+[node name="Crate" type="MeshInstance3D" parent="TemplateProps" unique_id=814123604]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 3.9225569, 50, -66.07731)
+mesh = ExtResource("5_hhcpw")
+
+[node name="Mug" type="MeshInstance3D" parent="TemplateProps" unique_id=1354085285]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -2.4922752, 50, -58.96732)
+mesh = ExtResource("6_mxvw5")
+
+[node name="Remote" type="MeshInstance3D" parent="TemplateProps" unique_id=1989606527]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -2.3277264, 44.233902, -62.329052)
+mesh = ExtResource("7_xrxkg")
+
+[node name="Statue" type="MeshInstance3D" parent="TemplateProps" unique_id=2025725310]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, -2.8489609, 44.355373, -65.49389)
+mesh = ExtResource("8_sqvbp")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1967590713]
 environment = SubResource("Environment_1")
@@ -81,16 +106,52 @@ shape = ExtResource("3_03owx")
 [node name="PropSlots" type="Node3D" parent="." unique_id=1192208525]
 
 [node name="PropSlot1" parent="PropSlots" unique_id=2138932775 instance=ExtResource("4_slot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.5, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, -0.15, -2)
 
 [node name="PropSlot2" parent="PropSlots" unique_id=75319116 instance=ExtResource("4_slot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, -3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, -0.15, 0.275)
 
 [node name="PropSlot3" parent="PropSlots" unique_id=1412531796 instance=ExtResource("4_slot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -0.15, 3)
 
 [node name="PropSlot4" parent="PropSlots" unique_id=1100272536 instance=ExtResource("4_slot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -0.15, 3)
+
+[node name="PropSlot5" parent="PropSlots" unique_id=1616562580 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.272188, -0.15, 7.01759)
+
+[node name="PropSlot6" parent="PropSlots" unique_id=40857248 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.722229, -0.15, -1.6463466)
+
+[node name="PropSlot7" parent="PropSlots" unique_id=947750698 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.963205, -0.15, 7.4716496)
+
+[node name="PropSlot8" parent="PropSlots" unique_id=50936395 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.290999, -0.15, -1.9387393)
+
+[node name="PropSlot9" parent="PropSlots" unique_id=276619244 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5182924, -0.15, -7.058137)
+
+[node name="PropSlot10" parent="PropSlots" unique_id=1586107925 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2761393, -0.15, -8.673376)
+
+[node name="PropSlot11" parent="PropSlots" unique_id=520583885 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.4061947, -0.15, -15.568425)
+
+[node name="PropSlot12" parent="PropSlots" unique_id=499679896 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.513253, -0.15, -16.534843)
+
+[node name="PropSlot13" parent="PropSlots" unique_id=1156908872 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.888931, -0.15, -2.0310173)
+
+[node name="PropSlot14" parent="PropSlots" unique_id=2041751855 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.593052, -0.15, 7.5242243)
+
+[node name="PropSlot15" parent="PropSlots" unique_id=1870136831 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.97355, -0.15, -1.2060175)
+
+[node name="PropSlot16" parent="PropSlots" unique_id=1992004717 instance=ExtResource("4_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.227197, 1.1483725, 6.311956)
 
 [node name="ImageSlots" type="Node3D" parent="." unique_id=1517264985]
 
@@ -98,12 +159,52 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 3)
 transform = Transform3D(-0.0014268324, 0, -0.9992127, 0, 2.2303991, 0, 2.2303984, 0, -0.00063921715, 6.477251, 2.5, -1.089757)
 slot_type = "Image"
 
+[node name="ImageSlot4" parent="ImageSlots" unique_id=1870960048 instance=ExtResource("4_slot")]
+transform = Transform3D(2.2302256, 0, 0.012468804, 0, 2.2303994, 0, -0.027832313, 0, 0.9991352, 3.4062753, 2.566929, -3.4765334)
+slot_type = "Image"
+
+[node name="ImageSlot12" parent="ImageSlots" unique_id=498845623 instance=ExtResource("4_slot")]
+transform = Transform3D(2.2302256, 0, 0.012468804, 0, 2.2303994, 0, -0.027832313, 0, 0.9991352, 11.287849, 2.566929, -3.4765334)
+slot_type = "Image"
+
+[node name="ImageSlot13" parent="ImageSlots" unique_id=660377495 instance=ExtResource("4_slot")]
+transform = Transform3D(2.2302256, 0, 0.012468804, 0, 2.2303994, 0, -0.027832313, 0, 0.9991352, 18.123384, 2.566929, -3.4765334)
+slot_type = "Image"
+
+[node name="ImageSlot6" parent="ImageSlots" unique_id=1381985834 instance=ExtResource("4_slot")]
+transform = Transform3D(-2.2303994, 0, -8.7353975e-08, 0, 2.2303994, 0, 1.949877e-07, 0, -0.999213, 4.3597155, 2.566929, -4.495328)
+slot_type = "Image"
+
+[node name="ImageSlot5" parent="ImageSlots" unique_id=344358564 instance=ExtResource("4_slot")]
+transform = Transform3D(2.2302256, 0, 0.012468804, 0, 2.2303994, 0, -0.027832313, 0, 0.9991352, -5.2475967, 2.566929, -3.4765334)
+slot_type = "Image"
+
+[node name="ImageSlot10" parent="ImageSlots" unique_id=1144469361 instance=ExtResource("4_slot")]
+transform = Transform3D(2.2302256, 0, 0.012468804, 0, 2.2303994, 0, -0.027832313, 0, 0.9991352, -10.118869, 2.566929, -3.4765334)
+slot_type = "Image"
+
+[node name="ImageSlot11" parent="ImageSlots" unique_id=822730337 instance=ExtResource("4_slot")]
+transform = Transform3D(2.2302256, 0, 0.012468804, 0, 2.2303994, 0, -0.027832313, 0, 0.9991352, -20.773027, 2.566929, -3.4765334)
+slot_type = "Image"
+
 [node name="ImageSlot2" parent="ImageSlots" unique_id=1032376760 instance=ExtResource("4_slot")]
 transform = Transform3D(-0.024983574, 0, 1.0136147, 0, 2.3671532, 0, -2.366953, 0, -0.010698867, -7.4276037, 2.5, 0)
 slot_type = "Image"
 
-[node name="ImageSlot3" parent="ImageSlots" unique_id=1946360184 instance=ExtResource("4_slot")]
-transform = Transform3D(2.3667555, 0, 0.016904289, 0, 2.3671532, 0, -0.039474227, 0, 1.0135303, -4.638272, 2.5, -3.3439465)
+[node name="ImageSlot3" parent="ImageSlots" unique_id=1900590771 instance=ExtResource("4_slot")]
+transform = Transform3D(-0.024983574, 0, 1.0136147, 0, 2.3671532, 0, -2.366953, 0, -0.010698867, -7.4276037, 2.5, -9.17038)
+slot_type = "Image"
+
+[node name="ImageSlot7" parent="ImageSlots" unique_id=1155744126 instance=ExtResource("4_slot")]
+transform = Transform3D(-0.024983574, 0, 1.0136147, 0, 2.3671532, 0, -2.366953, 0, -0.010698867, -7.4276037, 2.5, -15.078186)
+slot_type = "Image"
+
+[node name="ImageSlot8" parent="ImageSlots" unique_id=547213601 instance=ExtResource("4_slot")]
+transform = Transform3D(2.3670511, 0, -0.0053951377, 0, 2.3671532, 0, 0.012598513, 0, 1.0136567, -4.284173, 2.5, -18.449234)
+slot_type = "Image"
+
+[node name="ImageSlot9" parent="ImageSlots" unique_id=1875706970 instance=ExtResource("4_slot")]
+transform = Transform3D(2.3670511, 0, -0.0053951377, 0, 2.3671532, 0, 0.012598513, 0, 1.0136567, 3.1461267, 2.5, -18.449234)
 slot_type = "Image"
 
 [node name="FrontDoor" parent="." unique_id=42455936 instance=ExtResource("5_interact")]
@@ -263,6 +364,10 @@ mesh = ExtResource("14_j4qnp")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Chair2/StaticBody3D" unique_id=448675665]
 shape = ExtResource("15_fpfj3")
+
+[node name="visitorimage" type="MeshInstance3D" parent="." unique_id=1213211504]
+transform = Transform3D(-2.9997902, 0, -0.035477027, 0, 3, 0, 0.035477027, 0, -2.9997902, -0.66134655, 1.4215131, 11.916909)
+mesh = SubResource("QuadMesh_km21w")
 
 [editable path="FrontDoor"]
 [editable path="Phone"]
