@@ -22,7 +22,7 @@ func _ready():
 	Global.reset_state()
 	Global.game_started.connect(_on_game_started)
 	
-	visitor_image = get_node_or_null("../VisitorImage")
+	visitor_image = get_node_or_null("visitorimage")
 	if visitor_image:
 		visitor_image.hide()
 
