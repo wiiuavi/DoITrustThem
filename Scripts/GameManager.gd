@@ -5,6 +5,7 @@ static var instance: GameManager
 
 @export var prop_slots_parent: Node3D
 @export var image_slots_parent: Node3D
+@export var total_item_count: int = 15
 @export var visitor_interval_seconds: float = 15.0
 @export var game_duration_seconds: float = 1200.0
 @export var visitor_patience_seconds: float = 18.0
@@ -35,19 +36,31 @@ func generate_house_environment():
 	if not image_slots_parent:
 		image_slots_parent = get_node_or_null("../ImageSlots")
 
+	var slots: Array[Node] = []
+
 	if prop_slots_parent:
 		for slot in prop_slots_parent.get_children():
 			if slot.has_method("spawn_random_prop"):
-				var item_data = slot.spawn_random_prop()
-				if not item_data.is_empty():
-					Global.active_house_items.append(item_data)
+				slots.append(slot)
 
 	if image_slots_parent:
 		for slot in image_slots_parent.get_children():
 			if slot.has_method("spawn_random_prop"):
-				var item_data = slot.spawn_random_prop()
-				if not item_data.is_empty():
-					Global.active_house_items.append(item_data)
+				slots.append(slot)
+
+	for slot in slots:
+		if slot.has_method("clear_slot"):
+			slot.clear_slot()
+
+	slots.shuffle()
+
+	for slot in slots:
+		if Global.active_house_items.size() >= total_item_count:
+			break
+		if slot.has_method("spawn_random_prop"):
+			var item_data = slot.spawn_random_prop()
+			if not item_data.is_empty():
+				Global.active_house_items.append(item_data)
 
 func _process(delta: float):
 	if not Global.game_active or Global.is_paused:
@@ -79,13 +92,38 @@ func spawn_visitor():
 		claim_item_name = real_item["name"]
 		claim_color = real_item["color"]
 	else:
-		var fake_categories = [
-			"Vase", "TV", "Plant", "Box", "Patrick Jane Painting", 
-			"Golden Statue", "Image 1", "Image 2", "Image 3", "Image 4", "Image 5"
-		]
-		var fake_colors = ["Red", "Purple", "Cyan", "Magenta", "Gold", "Blue", "Green"]
-		claim_item_name = fake_categories.pick_random()
-		claim_color = fake_colors.pick_random()
+		var fake_categories = []
+		var fake_colors = ["Red", "Purple", "Cyan", "Magenta", "Gold", "Blue", "Green", "Yellow", "Black"]
+		
+		var template_parent = get_node_or_null("../TemplateProps")
+		if template_parent:
+			for child in template_parent.get_children():
+				fake_categories.append(child.name)
+				
+		var image_titles = []
+		var dir = DirAccess.open("res://images")
+		if dir:
+			dir.list_dir_begin()
+			var file_name = dir.get_next()
+			while file_name != "":
+				if not dir.current_is_dir():
+					if file_name.ends_with(".png"):
+						image_titles.append(file_name.trim_suffix(".png"))
+					elif file_name.ends_with(".png.import"):
+						var t = file_name.trim_suffix(".png.import")
+						if not image_titles.has(t):
+							image_titles.append(t)
+				file_name = dir.get_next()
+				
+		var all_options = fake_categories + image_titles
+		if all_options.is_empty():
+			all_options = ["Box", "Vase"]
+			
+		claim_item_name = all_options.pick_random()
+		if claim_item_name in image_titles:
+			claim_color = ""
+		else:
+			claim_color = fake_colors.pick_random()
 		
 		is_truthful = false
 		for item in Global.active_house_items:
@@ -121,7 +159,23 @@ static func handle_player_decision(opened_door: bool):
 		if is_truthful:
 			Global.successful_sales += 1
 			UIManager.show_subtitle("Visitor: Thanks for letting me grab it! Bye!", 4.0)
-			instance._resolve_visitor()
+			
+			var claim_name = Global.current_visitor_claim["name"]
+			var claim_color = Global.current_visitor_claim["color"]
+			
+			for i in range(Global.active_house_items.size() - 1, -1, -1):
+				var item = Global.active_house_items[i]
+				if item["name"] == claim_name and item["color"] == claim_color:
+					if is_instance_valid(item["node"]):
+						item["node"].queue_free()
+					Global.active_house_items.remove_at(i)
+					break
+					
+			if Global.active_house_items.is_empty():
+				instance._win_game()
+				return
+			else:
+				instance._resolve_visitor()
 		else:
 			instance._trigger_game_over("Why did you trust me, " + Global.player_name)
 	else:
@@ -153,4 +207,4 @@ func _trigger_game_over(fail_text: String):
 
 func _win_game():
 	Global.game_active = false
-	Global.game_won.emit()
+	_trigger_game_over("All items collected! You win!")

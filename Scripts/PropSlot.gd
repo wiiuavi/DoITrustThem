@@ -1,72 +1,83 @@
+@tool
 class_name PropSlot
 extends Node3D
 
-@export_enum("Random", "Painting", "Vase", "Box", "TV", "Plant", "Image") var category: String = "Random"
+@export_enum("Prop", "Image") var slot_type: String = "Prop":
+	set(value):
+		slot_type = value
+		_update_placeholder_visibility()
 
 const COLORS = ["Red", "Blue", "Green", "Purple", "Yellow", "Black"]
-const PAINTING_TITLES = ["Patrick Jane", "Mona Lisa", "Dark Woods", "The Screaming Man", "Ocean Wave"]
-const IMAGE_TITLES = ["Image 1", "Image 2", "Image 3", "Image 4", "Image 5"]
 
+func _ready():
+	_update_placeholder_visibility()
 
-func spawn_random_prop() -> Dictionary:
+func _update_placeholder_visibility():
+	var canvas = get_node_or_null("PlaceholderCanvas") as MeshInstance3D
+	if canvas:
+		canvas.visible = slot_type == "Image"
+
+func clear_slot():
 	for child in get_children():
 		child.queue_free()
 
-	if randf() > 0.8:
-		return {}
+func spawn_random_prop() -> Dictionary:
+	clear_slot()
 
-	var categories_list = ["Painting", "Vase", "Box", "TV", "Plant", "Image"]
 	var item_dict = {}
-	
 	var prop_node = StaticBody3D.new()
 	prop_node.set_script(load("res://Scripts/Interactable.gd"))
 	prop_node.collision_layer = 2
 
-	var mesh_inst = MeshInstance3D.new()
-	var box_shape = BoxShape3D.new()
-	box_shape.size = Vector3(0.6, 0.8, 0.1)
+	var templates = []
+	var template_parent = get_node_or_null("/root/Main/TemplateProps")
+	if template_parent:
+		for child in template_parent.get_children():
+			if child is MeshInstance3D and child.mesh:
+				templates.append(child)
 	
-	var col_shape = CollisionShape3D.new()
-	col_shape.shape = box_shape
-
-	prop_node.add_child(mesh_inst)
-	prop_node.add_child(col_shape)
-
-	var mat = StandardMaterial3D.new()
-
-	
-	var attempts = 0
+	var image_titles = []
+	var dir = DirAccess.open("res://images")
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if not dir.current_is_dir():
+				if file_name.ends_with(".png"):
+					var t = file_name.trim_suffix(".png")
+					if not image_titles.has(t):
+						image_titles.append(t)
+				elif file_name.ends_with(".png.import"):
+					var t = file_name.trim_suffix(".png.import")
+					if not image_titles.has(t):
+						image_titles.append(t)
+			file_name = dir.get_next()
+			
 	var is_duplicate = true
-	var final_cat = category
-	var p_title = ""
-	var img_title = ""
-	var color_name = ""
+	var attempts = 0
+	var chosen_name = ""
+	var chosen_color = ""
+	var chosen_template = null
 
 	while is_duplicate and attempts < 30:
 		attempts += 1
-		if category == "Random":
-			final_cat = categories_list.pick_random()
+		if slot_type == "Image":
+			if image_titles.size() > 0:
+				chosen_name = image_titles.pick_random()
+			else:
+				chosen_name = "Placeholder"
+			chosen_color = ""
 		else:
-			final_cat = category
-
-		item_dict.clear()
-
-		if final_cat == "Painting":
-			p_title = PAINTING_TITLES.pick_random()
-			item_dict["name"] = p_title + " Painting"
-			item_dict["color"] = ""
-		elif final_cat == "Image":
-			img_title = IMAGE_TITLES.pick_random()
-			item_dict["name"] = img_title
-			item_dict["color"] = ""
-		else:
-			color_name = COLORS.pick_random()
-			item_dict["name"] = final_cat
-			item_dict["color"] = color_name
+			if templates.size() > 0:
+				chosen_template = templates.pick_random()
+				chosen_name = chosen_template.name
+			else:
+				chosen_name = "Generic Box"
+			chosen_color = COLORS.pick_random()
 
 		is_duplicate = false
 		for existing in Global.active_house_items:
-			if existing["name"] == item_dict["name"] and existing["color"] == item_dict["color"]:
+			if existing["name"] == chosen_name and existing["color"] == chosen_color:
 				is_duplicate = true
 				break
 
@@ -74,45 +85,75 @@ func spawn_random_prop() -> Dictionary:
 		prop_node.queue_free()
 		return {}
 
+	item_dict["name"] = chosen_name
+	item_dict["color"] = chosen_color
+	item_dict["node"] = prop_node
 
-	if final_cat == "Painting":
-		prop_node.item_name = item_dict["name"]
+	if slot_type == "Image":
+		prop_node.item_name = chosen_name
 		prop_node.item_color = ""
-		prop_node.description = "A painting titled '" + item_dict["name"].trim_suffix(" Painting") + "'"
+		prop_node.description = "An image titled '" + chosen_name + "'"
 		
+		var canvas_mesh = MeshInstance3D.new()
+		var canvas_box = BoxMesh.new()
+		canvas_box.size = Vector3(0.6, 0.8, 0.05)
+		canvas_mesh.mesh = canvas_box
+		var canvas_mat = StandardMaterial3D.new()
+		canvas_mat.albedo_color = Color.WHITE
+		canvas_mesh.material_override = canvas_mat
+		prop_node.add_child(canvas_mesh)
+		
+		var face_mesh = MeshInstance3D.new()
 		var quad = QuadMesh.new()
-		quad.size = Vector2(0.8, 1.0)
-		mesh_inst.mesh = quad
-		mat.albedo_color = Color(randf(), randf(), randf())
+		quad.size = Vector2(0.55, 0.75)
+		face_mesh.mesh = quad
+		face_mesh.position.z = 0.026 
+		var face_mat = StandardMaterial3D.new()
+		if ResourceLoader.exists("res://images/" + chosen_name + ".png"):
+			face_mat.albedo_texture = load("res://images/" + chosen_name + ".png")
+		else:
+			face_mat.albedo_color = Color.DARK_GRAY
+		face_mesh.material_override = face_mat
+		prop_node.add_child(face_mesh)
 
-	elif final_cat == "Image":
-		prop_node.item_name = item_dict["name"]
-		prop_node.item_color = ""
-		prop_node.description = "An image titled '" + item_dict["name"] + "'"
+		var col_shape = CollisionShape3D.new()
+		var box_shape = BoxShape3D.new()
+		box_shape.size = Vector3(0.6, 0.8, 0.05)
+		col_shape.shape = box_shape
+		prop_node.add_child(col_shape)
 		
-		var thin_box = BoxMesh.new()
-		thin_box.size = Vector3(0.5, 0.7, 0.04)
-		mesh_inst.mesh = thin_box
-		mat.albedo_color = Color.WHITE
-
 	else:
-		prop_node.item_name = final_cat
-		prop_node.item_color = item_dict["color"]
-		prop_node.description = item_dict["color"] + " " + final_cat
+		prop_node.item_name = chosen_name
+		prop_node.item_color = chosen_color
+		prop_node.description = chosen_color + " " + chosen_name
 
-		var box = BoxMesh.new()
-		box.size = Vector3(0.4, 0.4, 0.4)
-		mesh_inst.mesh = box
-		
-		match item_dict["color"]:
+		var mesh_inst = MeshInstance3D.new()
+		var col_shape = CollisionShape3D.new()
+
+		if chosen_template:
+			mesh_inst.mesh = chosen_template.mesh.duplicate()
+			var shape = mesh_inst.mesh.create_convex_shape()
+			col_shape.shape = shape
+		else:
+			var box = BoxMesh.new()
+			box.size = Vector3(0.4, 0.4, 0.4)
+			mesh_inst.mesh = box
+			var box_shape = BoxShape3D.new()
+			box_shape.size = Vector3(0.4, 0.4, 0.4)
+			col_shape.shape = box_shape
+
+		var mat = StandardMaterial3D.new()
+		match chosen_color:
 			"Red": mat.albedo_color = Color.RED
 			"Blue": mat.albedo_color = Color.BLUE
 			"Green": mat.albedo_color = Color.GREEN
 			"Purple": mat.albedo_color = Color.PURPLE
 			"Yellow": mat.albedo_color = Color.YELLOW
 			"Black": mat.albedo_color = Color.DARK_SLATE_GRAY
+			
+		mesh_inst.material_override = mat
+		prop_node.add_child(mesh_inst)
+		prop_node.add_child(col_shape)
 
-	mesh_inst.material_override = mat
 	add_child(prop_node)
-	
 	return item_dict

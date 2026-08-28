@@ -17,6 +17,7 @@ static var instance: UIManager
 @onready var sens_slider_main: HSlider = $MainMenu/VBoxContainer/SensSlider
 @onready var sens_slider_pause: HSlider = $PauseMenu/VBoxContainer/SensSlider
 @onready var stats_label: Label = $GameOverMenu/VBoxContainer/StatsLabel
+@onready var game_over_title: Label = $GameOverMenu/VBoxContainer/TitleLabel
 
 var subtitle_timer: float = 0.0
 var game_over_fading: bool = false
@@ -113,9 +114,18 @@ func _on_game_over(reason: String):
 	visitor_box.hide()
 	game_over_reason_label.text = reason
 	game_over_reason_label.show()
-	game_over_fading = true
+	
+	if reason == "All items collected! You win!":
+		red_overlay.color = Color(0, 0, 0, 0.75)
+		_show_game_over_panel()
+	else:
+		game_over_fading = true
 
 func _show_game_over_panel():
 	game_over_reason_label.hide()
+	if game_over_reason_label.text == "All items collected! You win!":
+		game_over_title.text = "YOU WIN!"
+	else:
+		game_over_title.text = "GAME OVER"
 	stats_label.text = "Sales Made: " + str(Global.successful_sales) + " / " + str(Global.total_real_visitors) + "\nImpostors Caught: " + str(Global.impostors_caught)
 	game_over_menu.show()
