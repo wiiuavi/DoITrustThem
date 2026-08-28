@@ -132,8 +132,12 @@ func spawn_random_prop() -> Dictionary:
 
 		if chosen_template:
 			mesh_inst.mesh = chosen_template.mesh.duplicate()
+			mesh_inst.scale = chosen_template.scale
 			var shape = mesh_inst.mesh.create_convex_shape()
 			col_shape.shape = shape
+			col_shape.scale = chosen_template.scale
+			var aabb = mesh_inst.mesh.get_aabb()
+			col_shape.position = aabb.get_center() * chosen_template.scale
 		else:
 			var box = BoxMesh.new()
 			box.size = Vector3(0.4, 0.4, 0.4)

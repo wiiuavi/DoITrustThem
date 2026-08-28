@@ -5,15 +5,15 @@ static var instance: GameManager
 
 @export var prop_slots_parent: Node3D
 @export var image_slots_parent: Node3D
-@export var total_item_count: int = 15
-@export var visitor_interval_seconds: float = 15.0
+@export var visitor_interval_seconds: float = 10.0
 @export var game_duration_seconds: float = 1200.0
-@export var visitor_patience_seconds: float = 18.0
+@export var visitor_patience_seconds: float = 30.0
 
 var elapsed_time: float = 0.0
 var visitor_timer: float = 0.0
 var patience_timer: float = 0.0
 var is_visitor_waiting: bool = false
+var visitor_image: Node3D = null
 
 func _enter_tree():
 	instance = self
@@ -21,6 +21,10 @@ func _enter_tree():
 func _ready():
 	Global.reset_state()
 	Global.game_started.connect(_on_game_started)
+	
+	visitor_image = get_node_or_null("../VisitorImage")
+	if visitor_image:
+		visitor_image.hide()
 
 func _on_game_started():
 	Global.game_active = true
@@ -36,31 +40,19 @@ func generate_house_environment():
 	if not image_slots_parent:
 		image_slots_parent = get_node_or_null("../ImageSlots")
 
-	var slots: Array[Node] = []
-
 	if prop_slots_parent:
 		for slot in prop_slots_parent.get_children():
 			if slot.has_method("spawn_random_prop"):
-				slots.append(slot)
+				var item_data = slot.spawn_random_prop()
+				if not item_data.is_empty():
+					Global.active_house_items.append(item_data)
 
 	if image_slots_parent:
 		for slot in image_slots_parent.get_children():
 			if slot.has_method("spawn_random_prop"):
-				slots.append(slot)
-
-	for slot in slots:
-		if slot.has_method("clear_slot"):
-			slot.clear_slot()
-
-	slots.shuffle()
-
-	for slot in slots:
-		if Global.active_house_items.size() >= total_item_count:
-			break
-		if slot.has_method("spawn_random_prop"):
-			var item_data = slot.spawn_random_prop()
-			if not item_data.is_empty():
-				Global.active_house_items.append(item_data)
+				var item_data = slot.spawn_random_prop()
+				if not item_data.is_empty():
+					Global.active_house_items.append(item_data)
 
 func _process(delta: float):
 	if not Global.game_active or Global.is_paused:
@@ -83,6 +75,10 @@ func _process(delta: float):
 func spawn_visitor():
 	is_visitor_waiting = true
 	patience_timer = visitor_patience_seconds
+	
+	if visitor_image:
+		visitor_image.show()
+		
 	var is_truthful = randf() > 0.5
 	var claim_item_name = ""
 	var claim_color = ""
@@ -107,12 +103,13 @@ func spawn_visitor():
 			var file_name = dir.get_next()
 			while file_name != "":
 				if not dir.current_is_dir():
-					if file_name.ends_with(".png"):
-						image_titles.append(file_name.trim_suffix(".png"))
-					elif file_name.ends_with(".png.import"):
-						var t = file_name.trim_suffix(".png.import")
-						if not image_titles.has(t):
-							image_titles.append(t)
+					var valid_exts = [".png", ".jpg", ".jpeg", ".png.import", ".jpg.import", ".jpeg.import"]
+					for ext in valid_exts:
+						if file_name.ends_with(ext):
+							var t = file_name.trim_suffix(ext)
+							if not image_titles.has(t):
+								image_titles.append(t)
+							break
 				file_name = dir.get_next()
 				
 		var all_options = fake_categories + image_titles
@@ -199,6 +196,10 @@ func _handle_visitor_timeout():
 func _resolve_visitor():
 	is_visitor_waiting = false
 	visitor_timer = visitor_interval_seconds
+	
+	if visitor_image:
+		visitor_image.hide()
+		
 	Global.visitor_resolved.emit()
 
 func _trigger_game_over(fail_text: String):
