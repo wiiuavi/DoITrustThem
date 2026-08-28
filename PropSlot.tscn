@@ -1,6 +1,17 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://Scripts/PropSlot.gd" id="1_slot"]
 
+[sub_resource type="BoxMesh" id="BoxMesh_placeholder"]
+size = Vector3(0.6, 0.8, 0.05)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_placeholder"]
+albedo_color = Color(1, 1, 1, 1)
+
 [node name="PropSlot" type="Node3D"]
 script = ExtResource("1_slot")
+
+[node name="PlaceholderCanvas" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("BoxMesh_placeholder")
+material_override = SubResource("StandardMaterial3D_placeholder")

@@ -16,6 +16,12 @@
 [ext_resource type="ArrayMesh" uid="uid://js88ww2exh67" path="res://house/chair.obj" id="14_j4qnp"]
 [ext_resource type="Shape3D" uid="uid://nt08qd6xfvhb" path="res://chair.res" id="15_fpfj3"]
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_tp"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tp"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_tp"]
+
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
 background_color = Color(0.15, 0.2, 0.25, 1)
@@ -36,10 +42,25 @@ albedo_texture = ExtResource("6_trn2v")
 uv1_scale = Vector3(2, 2, 2)
 texture_filter = 0
 
-[node name="MainWorld" type="Node3D" unique_id=358815532 node_paths=PackedStringArray("prop_slots_parent", "image_slots_parent")]
+[node name="Main" type="Node3D" unique_id=358815532 node_paths=PackedStringArray("prop_slots_parent", "image_slots_parent")]
 script = ExtResource("1_main")
 prop_slots_parent = NodePath("PropSlots")
 image_slots_parent = NodePath("ImageSlots")
+
+[node name="TemplateProps" type="Node3D" parent="." unique_id=999999999]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
+
+[node name="Statue" type="MeshInstance3D" parent="TemplateProps" unique_id=999999998]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 51.49859, -56.673347)
+mesh = SubResource("CapsuleMesh_tp")
+
+[node name="Vase" type="MeshInstance3D" parent="TemplateProps" unique_id=999999997]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.061926, 50.413574, -52.427162)
+mesh = SubResource("CylinderMesh_tp")
+
+[node name="Box" type="MeshInstance3D" parent="TemplateProps" unique_id=999999996]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6665738, 50.502, -53.062485)
+mesh = SubResource("BoxMesh_tp")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1967590713]
 environment = SubResource("Environment_1")
@@ -74,12 +95,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 3)
 [node name="ImageSlots" type="Node3D" parent="." unique_id=1517264985]
 
 [node name="ImageSlot1" parent="ImageSlots" unique_id=578512592 instance=ExtResource("4_slot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.306738, 2.5, -1.089757)
-category = "Image"
+transform = Transform3D(-0.0014268324, 0, -0.9992127, 0, 2.2303991, 0, 2.2303984, 0, -0.00063921715, 6.477251, 2.5, -1.089757)
+slot_type = "Image"
 
 [node name="ImageSlot2" parent="ImageSlots" unique_id=1032376760 instance=ExtResource("4_slot")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7.5303907, 2.5, 0)
-category = "Image"
+transform = Transform3D(-0.024983574, 0, 1.0136147, 0, 2.3671532, 0, -2.366953, 0, -0.010698867, -7.4276037, 2.5, 0)
+slot_type = "Image"
+
+[node name="ImageSlot3" parent="ImageSlots" unique_id=1946360184 instance=ExtResource("4_slot")]
+transform = Transform3D(2.3667555, 0, 0.016904289, 0, 2.3671532, 0, -0.039474227, 0, 1.0135303, -4.638272, 2.5, -3.3439465)
+slot_type = "Image"
 
 [node name="FrontDoor" parent="." unique_id=42455936 instance=ExtResource("5_interact")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.234566, 1, 10.632643)
