@@ -123,7 +123,7 @@ static func handle_player_decision(opened_door: bool):
 			UIManager.show_subtitle("Visitor: Thanks for letting me grab it! Bye!", 4.0)
 			instance._resolve_visitor()
 		else:
-			instance._trigger_game_over("why did you trust me, " + Global.player_name)
+			instance._trigger_game_over("Why did you trust me, " + Global.player_name)
 	else:
 		if not is_truthful:
 			Global.impostors_caught += 1
@@ -140,7 +140,7 @@ func _handle_visitor_timeout():
 		UIManager.show_subtitle("Visitor: What a scam... (Leaves)", 4.0)
 		_resolve_visitor()
 	else:
-		_trigger_game_over("should called for help, " + Global.player_name)
+		_trigger_game_over("Should've called for help, " + Global.player_name)
 
 func _resolve_visitor():
 	is_visitor_waiting = false
